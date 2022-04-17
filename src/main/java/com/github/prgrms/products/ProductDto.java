@@ -10,17 +10,22 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ProductDto {
 
     private Long seq;
+
     private String name;
+
     private String details;
+
     private int reviewCount;
+
     private LocalDateTime createAt;
 
     public ProductDto(Product source) {
         copyProperties(source, this);
+        this.details = source.getDetails().orElse(null);
     }
 
     public Long getSeq() {
-        return this.seq;
+        return seq;
     }
 
     public void setSeq(Long seq) {
@@ -28,7 +33,7 @@ public class ProductDto {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -36,7 +41,7 @@ public class ProductDto {
     }
 
     public String getDetails() {
-        return this.details;
+        return details;
     }
 
     public void setDetails(String details) {
@@ -44,7 +49,7 @@ public class ProductDto {
     }
 
     public int getReviewCount() {
-        return this.reviewCount;
+        return reviewCount;
     }
 
     public void setReviewCount(int reviewCount) {
@@ -52,7 +57,7 @@ public class ProductDto {
     }
 
     public LocalDateTime getCreateAt() {
-        return this.createAt;
+        return createAt;
     }
 
     public void setCreateAt(LocalDateTime createAt) {
@@ -61,10 +66,8 @@ public class ProductDto {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", this.seq)
-                .append("name", this.name).append("details", this.details)
-                .append("reviewCount", this.reviewCount).append("createAt", this.createAt)
-                .toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", seq).append("name", name)
+                .append("details", details).append("reviewCount", reviewCount).append("createAt", createAt).toString();
     }
 
 }

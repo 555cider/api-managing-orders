@@ -34,7 +34,7 @@ public class User {
 	public User(Long seq, String name, Email email, String passwd, int loginCount, LocalDateTime lastLoginAt,
 			LocalDateTime createAt) {
 		checkArgument(isNotEmpty(name), "name must be provided");
-		checkArgument((name.length() >= 1) && (name.length() <= 10), "name length must be between 1 and 10 characters");
+		checkArgument((name.length() >= 1) && (name.length() <= 10), "name length must be between 1 and 10");
 		checkNotNull(email, "email must be provided");
 		checkNotNull(passwd, "password must be provided");
 
@@ -110,10 +110,15 @@ public class User {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", this.seq)
-				.append("name", this.name).append("email", this.email).append("passwd", "[PROTECTED]")
-				.append("loginCount", this.loginCount).append("lastLoginAt", this.lastLoginAt)
-				.append("createAt", this.createAt).toString();
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("seq", this.seq)
+				.append("name", this.name)
+				.append("email", this.email)
+				.append("passwd", "[PROTECTED]")
+				.append("loginCount", this.loginCount)
+				.append("lastLoginAt", this.lastLoginAt)
+				.append("createAt", this.createAt)
+				.toString();
 	}
 
 	static public class Builder {

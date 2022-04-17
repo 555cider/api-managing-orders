@@ -30,11 +30,8 @@ import org.springframework.web.filter.GenericFilterBean;
 public class JwtAuthenticationTokenFilter extends GenericFilterBean {
 
 	private static final Pattern BEARER = Pattern.compile("^Bearer$", Pattern.CASE_INSENSITIVE);
-
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
 	private final String headerKey;
-
 	private final Jwt jwt;
 
 	public JwtAuthenticationTokenFilter(String headerKey, Jwt jwt) {

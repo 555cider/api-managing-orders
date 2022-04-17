@@ -41,8 +41,10 @@ public class ApiUtils {
 
 		@Override
 		public String toString() {
-			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("message", this.message)
-					.append("status", this.status).toString();
+			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+					.append("message", this.message)
+					.append("status", this.status)
+					.toString();
 		}
 	}
 
@@ -71,8 +73,11 @@ public class ApiUtils {
 
 		@Override
 		public String toString() {
-			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("success", this.success)
-					.append("response", this.response).append("error", this.error).toString();
+			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+					.append("success", this.success)
+					.append("response", this.response)
+					.append("error", this.error)
+					.toString();
 		}
 	}
 

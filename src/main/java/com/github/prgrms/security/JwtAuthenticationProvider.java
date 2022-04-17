@@ -19,38 +19,38 @@ import com.github.prgrms.users.UserService;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    public JwtAuthenticationProvider(UserService userService) {
-	this.userService = userService;
-    }
-
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-	JwtAuthenticationToken authenticationToken = (JwtAuthenticationToken) authentication;
-	return this.processUserAuthentication(Email.of(String.valueOf(authenticationToken.getPrincipal())),
-		authenticationToken.getCredentials());
-    }
-
-    private Authentication processUserAuthentication(Email email, String password) {
-	try {
-	    User user = this.userService.login(email, password);
-	    JwtAuthenticationToken authenticated = new JwtAuthenticationToken(
-		    new JwtAuthentication(user.getSeq(), user.getName()), null, createAuthorityList(Role.USER.value()));
-	    authenticated.setDetails(user);
-	    return authenticated;
-	} catch (NotFoundException e) {
-	    throw new UsernameNotFoundException(e.getMessage());
-	} catch (IllegalArgumentException e) {
-	    throw new BadCredentialsException(e.getMessage());
-	} catch (DataAccessException e) {
-	    throw new AuthenticationServiceException(e.getMessage(), e);
+	public JwtAuthenticationProvider(UserService userService) {
+		this.userService = userService;
 	}
-    }
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-	return isAssignable(JwtAuthenticationToken.class, authentication);
-    }
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		JwtAuthenticationToken authenticationToken = (JwtAuthenticationToken) authentication;
+		return this.processUserAuthentication(Email.of(String.valueOf(authenticationToken.getPrincipal())),
+				authenticationToken.getCredentials());
+	}
+
+	private Authentication processUserAuthentication(Email email, String password) {
+		try {
+			User user = this.userService.login(email, password);
+			JwtAuthenticationToken authenticated = new JwtAuthenticationToken(
+					new JwtAuthentication(user.getSeq(), user.getName()), null, createAuthorityList(Role.USER.value()));
+			authenticated.setDetails(user);
+			return authenticated;
+		} catch (NotFoundException e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			throw new BadCredentialsException(e.getMessage());
+		} catch (DataAccessException e) {
+			throw new AuthenticationServiceException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return isAssignable(JwtAuthenticationToken.class, authentication);
+	}
 
 }

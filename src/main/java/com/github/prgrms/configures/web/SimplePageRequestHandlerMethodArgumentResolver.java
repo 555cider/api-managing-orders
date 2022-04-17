@@ -6,38 +6,51 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class SimplePageRequestHandlerMethodArgumentResolver
-        implements HandlerMethodArgumentResolver {
+public class SimplePageRequestHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String DEFAULT_OFFSET_PARAMETER = "offset";
-    private static final String DEFAULT_SIZE_PARAMETER = "size";
-    private static final Integer DEFAULT_OFFSET = 0;
-    private static final Integer DEFAULT_SIZE = 5;
-    private String offsetParameterName = DEFAULT_OFFSET_PARAMETER;
-    private String sizeParameterName = DEFAULT_SIZE_PARAMETER;
+  private static final String DEFAULT_OFFSET_PARAMETER = "offset";
 
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        return Pageable.class.isAssignableFrom(parameter.getParameterType());
+  private static final String DEFAULT_SIZE_PARAMETER = "size";
+
+  private static final long DEFAULT_OFFSET = 0;
+
+  private static final int DEFAULT_SIZE = 5;
+
+  private String offsetParameterName = DEFAULT_OFFSET_PARAMETER;
+
+  private String sizeParameterName = DEFAULT_SIZE_PARAMETER;
+
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    return Pageable.class.isAssignableFrom(parameter.getParameterType());
+  }
+
+  @Override
+  public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+
+    String offsetString = webRequest.getParameter(offsetParameterName);
+    long offset = offsetString == null ? DEFAULT_OFFSET : Integer.parseInt(offsetString);
+    if (offset < 0 || offset > Long.MAX_VALUE) {
+      offset = DEFAULT_OFFSET;
     }
 
-    @Override
-    public Object resolveArgument(MethodParameter methodParameter,
-            ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory) {
-        String offsetString = webRequest.getParameter(this.offsetParameterName);
-        String sizeString = webRequest.getParameter(this.sizeParameterName);
-        Integer offset = offsetString == null ? DEFAULT_OFFSET : Integer.parseInt(offsetString);
-        Integer size = sizeString == null ? DEFAULT_SIZE : Integer.parseInt(sizeString);
-        return new SimplePageRequest(offset, size);
+    String sizeString = webRequest.getParameter(sizeParameterName);
+    int size = sizeString == null ? DEFAULT_SIZE : Integer.parseInt(sizeString);
+    if (size < 1 || size > 5) {
+      size = DEFAULT_SIZE;
     }
 
-    public void setOffsetParameterName(String offsetParameterName) {
-        this.offsetParameterName = offsetParameterName;
-    }
+    return new SimplePageRequest(offset, size);
 
-    public void setSizeParameterName(String sizeParameterName) {
-        this.sizeParameterName = sizeParameterName;
-    }
+  }
+
+  public void setOffsetParameterName(String offsetParameterName) {
+    this.offsetParameterName = offsetParameterName;
+  }
+
+  public void setSizeParameterName(String sizeParameterName) {
+    this.sizeParameterName = sizeParameterName;
+  }
 
 }

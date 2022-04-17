@@ -1,35 +1,41 @@
 package com.github.prgrms.orders;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 import java.time.LocalDateTime;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.beans.BeanUtils;
 
 public class OrderDto {
 
     private Long seq;
+
     private Long productId;
+
     private ReviewDto review;
+
     private String state;
+
     private String requestMessage;
+
     private String rejectMessage;
+
     private LocalDateTime completedAt;
+
     private LocalDateTime rejectedAt;
+
     private LocalDateTime createAt;
 
-    public OrderDto(Order order) {
-        BeanUtils.copyProperties(order, this);
-        this.productId = order.getProductSeq();
-        if (order.getReview() != null) {
-            this.review = new ReviewDto(order.getReview());
-        }
-        this.requestMessage = order.getRequestMsg();
-        this.rejectMessage = order.getRejectMsg();
+    public OrderDto(Order source) {
+        copyProperties(source, this);
+        this.productId = source.getProductSeq();
+        this.requestMessage = source.getRequestMsg();
+        this.rejectMessage = source.getRejectMsg();
     }
 
     public Long getSeq() {
-        return this.seq;
+        return seq;
     }
 
     public void setSeq(Long seq) {
@@ -37,7 +43,7 @@ public class OrderDto {
     }
 
     public Long getProductId() {
-        return this.productId;
+        return productId;
     }
 
     public void setProductId(Long productId) {
@@ -45,15 +51,15 @@ public class OrderDto {
     }
 
     public ReviewDto getReview() {
-        return this.review;
+        return review;
     }
 
-    public void setReviewDto(ReviewDto reviewDto) {
-        this.review = reviewDto;
+    public void setReview(ReviewDto review) {
+        this.review = review;
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(String state) {
@@ -61,7 +67,7 @@ public class OrderDto {
     }
 
     public String getRequestMessage() {
-        return this.requestMessage;
+        return requestMessage;
     }
 
     public void setRequestMessage(String requestMessage) {
@@ -69,7 +75,7 @@ public class OrderDto {
     }
 
     public String getRejectMessage() {
-        return this.rejectMessage;
+        return rejectMessage;
     }
 
     public void setRejectMessage(String rejectMessage) {
@@ -77,7 +83,7 @@ public class OrderDto {
     }
 
     public LocalDateTime getCompletedAt() {
-        return this.completedAt;
+        return completedAt;
     }
 
     public void setCompletedAt(LocalDateTime completedAt) {
@@ -85,7 +91,7 @@ public class OrderDto {
     }
 
     public LocalDateTime getRejectedAt() {
-        return this.rejectedAt;
+        return rejectedAt;
     }
 
     public void setRejectedAt(LocalDateTime rejectedAt) {
@@ -93,7 +99,7 @@ public class OrderDto {
     }
 
     public LocalDateTime getCreateAt() {
-        return this.createAt;
+        return createAt;
     }
 
     public void setCreateAt(LocalDateTime createAt) {
@@ -102,15 +108,10 @@ public class OrderDto {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("seq", this.seq)
-                .append("productId", this.productId)
-                .append("review", this.review)
-                .append("state", this.state)
-                .append("requestMessage", this.requestMessage)
-                .append("rejectMessage", this.rejectMessage)
-                .append("completedAt", this.completedAt)
-                .append("rejectedAt", this.rejectedAt)
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", this.seq)
+                .append("productId", this.productId).append("review", this.review).append("state", this.state)
+                .append("requestMessage", this.requestMessage).append("rejectMessage", this.rejectMessage)
+                .append("completedAt", this.completedAt).append("rejectedAt", this.rejectedAt)
                 .append("createAt", this.createAt)
                 .toString();
     }

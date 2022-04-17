@@ -39,9 +39,14 @@ public class JdbcUserRepository implements UserRepository {
                 user.getLoginCount(), user.getLastLoginAt().orElse(null), user.getSeq());
     }
 
-    static RowMapper<User> mapper = (rs, rowNum) -> new User.Builder().seq(rs.getLong("seq")).name(rs.getString("name"))
-            .email(new Email(rs.getString("email"))).passwd(rs.getString("passwd")).loginCount(rs.getInt("login_count"))
+    static RowMapper<User> mapper = (rs, rowNum) -> new User.Builder()
+            .seq(rs.getLong("seq"))
+            .name(rs.getString("name"))
+            .email(new Email(rs.getString("email")))
+            .passwd(rs.getString("passwd"))
+            .loginCount(rs.getInt("login_count"))
             .lastLoginAt(dateTimeOf(rs.getTimestamp("last_login_at")))
-            .createAt(dateTimeOf(rs.getTimestamp("create_at"))).build();
+            .createAt(dateTimeOf(rs.getTimestamp("create_at")))
+            .build();
 
 }

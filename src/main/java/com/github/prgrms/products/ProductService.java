@@ -1,20 +1,18 @@
 package com.github.prgrms.products;
 
-import static java.util.stream.Collectors.toList;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.github.prgrms.configures.web.Pageable;
-import com.github.prgrms.errors.NotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
 
-    @Autowired
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -22,17 +20,14 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductDto> findAll(Pageable pageable) {
-        return productRepository.findAll(pageable).stream().map(ProductDto::new).collect(toList());
+    public Optional<Product> findById(Long productId) {
+        checkNotNull(productId, "productId must be provided");
+        return productRepository.findById(productId);
     }
 
     @Transactional(readOnly = true)
-    public ProductDto findById(Long productSeq) {
-        Product product = productRepository.findById(productSeq);
-        if (product == null) {
-            throw new NotFoundException("");
-        }
-        return new ProductDto(product);
+    public List<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
 }

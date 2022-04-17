@@ -3,13 +3,14 @@ package com.github.prgrms.orders;
 import static com.github.prgrms.utils.ApiUtils.success;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.prgrms.configures.web.Pageable;
+import com.github.prgrms.errors.NotFoundException;
 import com.github.prgrms.security.JwtAuthentication;
 import com.github.prgrms.utils.ApiUtils.ApiResult;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,20 +23,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/orders")
 public class OrderRestController {
 
-	@Autowired
-	private OrderService orderService;
+	private final OrderService orderService;
+
+	private final ReviewService reviewService;
+
+	public OrderRestController(OrderService orderService, ReviewService reviewService) {
+		this.orderService = orderService;
+		this.reviewService = reviewService;
+	}
 
 	@GetMapping(path = "")
 	public ApiResult<List<OrderDto>> findAll(@AuthenticationPrincipal JwtAuthentication authentication,
 			Pageable pageable) {
-		return success(orderService.findAll(pageable).stream().map(OrderDto::new).collect(Collectors.toList()));
+		return success(orderService.findAll(pageable).stream().map(order -> {
+			OrderDto orderDto = new OrderDto(order);
+			if (order.getReviewSeq() != null && order.getReviewSeq() != 0) {
+				ReviewDto reviewDto = reviewService.findById(order.getReviewSeq()).map(ReviewDto::new)
+						.orElseThrow(() -> new NotFoundException(""));
+				orderDto.setReview(reviewDto);
+			}
+			return orderDto;
+		}).collect(Collectors.toList()));
 	}
 
 	@GetMapping(path = "{id}")
 	public ApiResult findById(@AuthenticationPrincipal JwtAuthentication authentication, @PathVariable Long id) {
 		try {
-			Order order = orderService.findById(id);
-			return success(new OrderDto(order));
+			Order order = orderService.findById(id).orElseThrow(() -> new NotFoundException(""));
+			OrderDto orderDto = new OrderDto(order);
+			if (order.getReviewSeq() != null && order.getReviewSeq() != 0) {
+				ReviewDto reviewDto = reviewService.findById(order.getReviewSeq()).map(ReviewDto::new)
+						.orElseThrow(() -> new NotFoundException(""));
+				orderDto.setReview(reviewDto);
+			}
+			return success(orderDto);
 		} catch (Exception e) {
 			return success(false);
 		}
@@ -43,25 +64,42 @@ public class OrderRestController {
 
 	@PatchMapping(path = "{id}/accept")
 	public ApiResult<Boolean> accept(@AuthenticationPrincipal JwtAuthentication authentication, @PathVariable Long id) {
-		return success(orderService.accept(authentication.id, id));
+		try {
+			return success(orderService.accept(authentication.id, id));
+		} catch (Exception e) {
+			return success(false);
+		}
 	}
 
 	@PatchMapping(value = "{id}/reject")
 	public ApiResult<Boolean> reject(@AuthenticationPrincipal JwtAuthentication authentication, @PathVariable Long id,
-			@RequestBody String message) {
-		return success(orderService.reject(authentication.id, id, message));
+			@RequestBody Map<String, String> requestBodyMap) {
+		String message = requestBodyMap == null ? null : requestBodyMap.get("message");
+		try {
+			return success(orderService.reject(authentication.id, id, message));
+		} catch (Exception e) {
+			return success(false);
+		}
 	}
 
 	@PatchMapping(path = "{id}/shipping")
 	public ApiResult<Boolean> shipping(@AuthenticationPrincipal JwtAuthentication authentication,
 			@PathVariable Long id) {
-		return success(orderService.shipping(authentication.id, id));
+		try {
+			return success(orderService.shipping(authentication.id, id));
+		} catch (Exception e) {
+			return success(false);
+		}
 	}
 
 	@PatchMapping(path = "{id}/complete")
 	public ApiResult<Boolean> complete(@AuthenticationPrincipal JwtAuthentication authentication,
 			@PathVariable Long id) {
-		return success(orderService.complete(authentication.id, id));
+		try {
+			return success(orderService.complete(authentication.id, id));
+		} catch (Exception e) {
+			return success(false);
+		}
 	}
 
 }

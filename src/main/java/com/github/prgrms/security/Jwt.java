@@ -17,13 +17,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 public final class Jwt {
 
 	private final String issuer;
-
 	private final String clientSecret;
-
 	private final int expirySeconds;
-
 	private final Algorithm algorithm;
-
 	private final JWTVerifier jwtVerifier;
 
 	public Jwt(String issuer, String clientSecret, int expirySeconds) {
@@ -125,9 +121,13 @@ public final class Jwt {
 
 		@Override
 		public String toString() {
-			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("userKey", this.userKey)
-					.append("name", this.name).append("roles", Arrays.toString(this.roles)).append("iat", this.iat)
-					.append("exp", this.exp).toString();
+			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+					.append("userKey", this.userKey)
+					.append("name", this.name)
+					.append("roles", Arrays.toString(this.roles))
+					.append("iat", this.iat)
+					.append("exp", this.exp)
+					.toString();
 		}
 	}
 

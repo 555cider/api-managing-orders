@@ -14,9 +14,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class Review {
 
 	private final Long seq;
-	private final Long userSeq;
-	private final Long productSeq;
-	private final String content;
+
+	private Long userSeq;
+
+	private Long productSeq;
+
+	private String content;
+
 	private final LocalDateTime createAt;
 
 	public Review(Long seq, Long userSeq, Long productSeq, String content, LocalDateTime createAt) {
@@ -33,58 +37,68 @@ public class Review {
 	}
 
 	public Long getSeq() {
-		return this.seq;
+		return seq;
 	}
 
 	public Long getUserSeq() {
-		return this.userSeq;
+		return userSeq;
+	}
+
+	public void setUserSeq(Long userSeq) {
+		this.userSeq = userSeq;
 	}
 
 	public Long getProductSeq() {
-		return this.productSeq;
+		return productSeq;
+	}
+
+	public void setProductSeq(Long productSeq) {
+		this.productSeq = productSeq;
 	}
 
 	public String getContent() {
-		return this.content;
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public LocalDateTime getCreateAt() {
-		return this.createAt;
+		return createAt;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
+		if (this == o)
 			return true;
-		}
-		if ((o == null) || (this.getClass() != o.getClass())) {
+		if (o == null || getClass() != o.getClass())
 			return false;
-		}
 		Review review = (Review) o;
-		return Objects.equals(this.seq, review.seq);
+		return Objects.equals(seq, review.seq);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.seq);
+		return Objects.hash(seq);
 	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("seq", this.seq)
-				.append("userSeq", this.userSeq)
-				.append("productSeq", this.productSeq)
-				.append("content", this.content)
-				.append("createAt", this.createAt)
-				.toString();
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", seq).append("userSeq", userSeq)
+				.append("productSeq", productSeq).append("content", content).append("createAt", createAt).toString();
 	}
 
 	static public class Builder {
+
 		private Long seq;
+
 		private Long userSeq;
+
 		private Long productSeq;
+
 		private String content;
+
 		private LocalDateTime createAt;
 
 		public Builder() {
@@ -103,12 +117,12 @@ public class Review {
 			return this;
 		}
 
-		public Builder userSeq(long userSeq) {
+		public Builder userSeq(Long userSeq) {
 			this.userSeq = userSeq;
-			return null;
+			return this;
 		}
 
-		public Builder productSeq(long productSeq) {
+		public Builder productSeq(Long productSeq) {
 			this.productSeq = productSeq;
 			return this;
 		}
@@ -124,7 +138,7 @@ public class Review {
 		}
 
 		public Review build() {
-			return new Review(this.seq, this.userSeq, this.productSeq, this.content, this.createAt);
+			return new Review(seq, userSeq, productSeq, content, createAt);
 		}
 	}
 

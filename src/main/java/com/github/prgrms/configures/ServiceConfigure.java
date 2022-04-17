@@ -37,10 +37,10 @@ public class ServiceConfigure {
 					new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			jtm.addDeserializer(LocalDate.class,
 					new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-			jtm.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-			jtm.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(
-					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			jtm.addSerializer(LocalDateTime.class,
+					new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			jtm.addDeserializer(LocalDateTime.class,
+					new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 			builder.visibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
 			builder.visibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);

@@ -2,11 +2,14 @@ package com.github.prgrms.products;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.LocalDateTime.now;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
@@ -16,24 +19,41 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class Product {
 
 	private final Long seq;
-	private final String name;
+
+	private String name;
+
 	private String details;
-	private final int reviewCount;
+
+	private int reviewCount;
+
 	private final LocalDateTime createAt;
+
+	public Product(String name, String details) {
+		this(null, name, details, 0, null);
+	}
 
 	public Product(Long seq, String name, String details, int reviewCount, LocalDateTime createAt) {
 		Preconditions.checkNotNull(name, "name must be provided");
 		Preconditions.checkNotNull(reviewCount, "reviewCount must be provided");
-		checkArgument((name.length() >= 1) && (name.length() <= 50),
-				"name length must be between 1 and 50 characters");
-		checkArgument(isEmpty(details) || (details.length() <= 1000),
-				"details length must be less than 1000 characters");
+		checkArgument((name.length() >= 1) && (name.length() <= 50), "name length must be between 1 and 50");
+		checkArgument(isEmpty(details) || (details.length() <= 1000), "details length must be less than 1000");
 
 		this.seq = seq;
 		this.name = name;
 		this.details = details;
 		this.reviewCount = reviewCount;
-		this.createAt = createAt;
+		this.createAt = defaultIfNull(createAt, now());
+	}
+
+	public void setName(String name) {
+		checkArgument(isNotEmpty(name), "name must be provided");
+		checkArgument(name.length() >= 1 && name.length() <= 50, "name length must be between 1 and 50 characters");
+		this.name = name;
+	}
+
+	public void setDetails(String details) {
+		checkArgument(isEmpty(details) || details.length() <= 1000, "details length must be less than 1000 characters");
+		this.details = details;
 	}
 
 	public Long getSeq() {
@@ -44,8 +64,8 @@ public class Product {
 		return this.name;
 	}
 
-	public String getDetails() {
-		return this.details;
+	public Optional<String> getDetails() {
+		return ofNullable(details);
 	}
 
 	public int getReviewCount() {
@@ -75,9 +95,12 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("seq", this.seq)
-				.append("name", this.name).append("details", this.details)
-				.append("reviewCount", this.reviewCount).append("createAt", this.createAt)
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("seq", this.seq)
+				.append("name", this.name)
+				.append("details", this.details)
+				.append("reviewCount", this.reviewCount)
+				.append("createAt", this.createAt)
 				.toString();
 	}
 
@@ -88,7 +111,8 @@ public class Product {
 		private int reviewCount;
 		private LocalDateTime createAt;
 
-		public Builder() {}
+		public Builder() {
+		}
 
 		public Builder(Product product) {
 			this.seq = product.seq;

@@ -4,6 +4,13 @@ import static com.github.prgrms.utils.ApiUtils.success;
 
 import javax.validation.Valid;
 
+import com.github.prgrms.errors.NotFoundException;
+import com.github.prgrms.errors.UnauthorizedException;
+import com.github.prgrms.security.Jwt;
+import com.github.prgrms.security.JwtAuthentication;
+import com.github.prgrms.security.JwtAuthenticationToken;
+import com.github.prgrms.utils.ApiUtils.ApiResult;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,21 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.prgrms.errors.NotFoundException;
-import com.github.prgrms.errors.UnauthorizedException;
-import com.github.prgrms.security.Jwt;
-import com.github.prgrms.security.JwtAuthentication;
-import com.github.prgrms.security.JwtAuthenticationToken;
-import com.github.prgrms.utils.ApiUtils.ApiResult;
-
 @RestController
 @RequestMapping("api/users")
 public class UserRestController {
 
 	private final Jwt jwt;
-
+  
 	private final AuthenticationManager authenticationManager;
-
+  
 	private final UserService userService;
 
 	public UserRestController(Jwt jwt, AuthenticationManager authenticationManager, UserService userService) {
@@ -53,8 +53,9 @@ public class UserRestController {
 	}
 
 	@GetMapping(path = "me")
-	public ApiResult<UserDto> me(@AuthenticationPrincipal JwtAuthentication authentication) {
-		return success(this.userService.findById(authentication.id).map(UserDto::new)
+	public ApiResult<UserDto> me(
+			@AuthenticationPrincipal JwtAuthentication authentication) {
+		return success(userService.findById(authentication.id).map(UserDto::new)
 				.orElseThrow(() -> new NotFoundException("Could nof found user for " + authentication.id)));
 	}
 

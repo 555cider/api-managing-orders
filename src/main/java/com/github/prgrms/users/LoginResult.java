@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class LoginResult {
 
     private final String token;
-
     private final UserDto user;
 
     public LoginResult(String token, User user) {
@@ -24,8 +23,10 @@ public class LoginResult {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("token", this.token)
-                .append("user", this.user).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("token", this.token)
+                .append("user", this.user)
+                .toString();
     }
 
 }

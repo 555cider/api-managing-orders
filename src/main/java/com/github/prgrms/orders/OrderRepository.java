@@ -1,6 +1,7 @@
 package com.github.prgrms.orders;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.github.prgrms.configures.web.Pageable;
 
@@ -8,7 +9,7 @@ public interface OrderRepository {
 
     List<Order> findAll(Pageable pageable);
 
-    Order findById(Long orderSeq);
+    Optional<Order> findById(Long orderSeq);
 
     int accept(Long userSeq, Long orderSeq);
 
