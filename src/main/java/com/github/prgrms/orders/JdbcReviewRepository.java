@@ -1,13 +1,10 @@
 package com.github.prgrms.orders;
 
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import com.github.prgrms.utils.DateTimeUtils;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -17,6 +14,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
+
+import com.github.prgrms.utils.DateTimeUtils;
 
 @Repository
 public class JdbcReviewRepository implements ReviewRepository {
