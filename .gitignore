@@ -1,8 +1,12 @@
 HELP.md
+bin/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Java ###
+*.class
 
 ### Gradle ###
 .gradle
