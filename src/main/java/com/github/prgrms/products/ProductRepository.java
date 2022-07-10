@@ -1,16 +1,22 @@
 package com.github.prgrms.products;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import com.github.prgrms.configures.web.Pageable;
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
-public interface ProductRepository {
+    Page<Product> findAll(Pageable pageable);
 
-    List<Product> findAll(Pageable pageable);
+    Product findBySeq(Long seq);
 
-    Optional<Product> findById(Long id);
-
-    int addReviewCount(Long productSeq);
+    @Modifying
+    @Query(value = "UPDATE products SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+    int addReviewCount(@Param("seq") Long seq);
 
 }

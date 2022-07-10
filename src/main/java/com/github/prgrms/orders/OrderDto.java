@@ -29,7 +29,7 @@ public class OrderDto {
 
     public OrderDto(Order source) {
         copyProperties(source, this);
-        this.productId = source.getProductSeq();
+        this.productId = source.getProductEntity().getSeq();
         this.requestMessage = source.getRequestMsg();
         this.rejectMessage = source.getRejectMsg();
     }
@@ -82,11 +82,11 @@ public class OrderDto {
         this.rejectMessage = rejectMessage;
     }
 
-    public LocalDateTime getCompletedAt() {
+    public LocalDateTime getCompletedA() {
         return completedAt;
     }
 
-    public void setCompletedAt(LocalDateTime completedAt) {
+    public void setCompleteAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
 

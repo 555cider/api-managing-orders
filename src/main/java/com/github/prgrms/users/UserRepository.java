@@ -1,13 +1,18 @@
 package com.github.prgrms.users;
 
-import java.util.Optional;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-public interface UserRepository {
+public interface UserRepository extends CrudRepository<User, Long> {
 
-    Optional<User> findById(Long id);
+    User findBySeq(Long seq);
 
-    Optional<User> findByEmail(Email email);
+    User findByEmail(Email email);
 
-    void update(User user);
+    @Modifying
+    @Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+    int update(@Param("seq") Long seq);
 
 }

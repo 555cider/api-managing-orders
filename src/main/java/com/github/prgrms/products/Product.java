@@ -2,23 +2,34 @@ package com.github.prgrms.products;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.LocalDateTime.now;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Builder
+@Entity
+@Table(name = "products")
 public class Product {
 
-	private final Long seq;
+	@Id
+	@GeneratedValue
+	private Long seq;
 
 	private String name;
 
@@ -26,7 +37,7 @@ public class Product {
 
 	private int reviewCount;
 
-	private final LocalDateTime createAt;
+	private LocalDateTime createAt;
 
 	public Product(String name, String details) {
 		this(null, name, details, 0, null);
@@ -56,26 +67,6 @@ public class Product {
 		this.details = details;
 	}
 
-	public Long getSeq() {
-		return this.seq;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public Optional<String> getDetails() {
-		return ofNullable(details);
-	}
-
-	public int getReviewCount() {
-		return this.reviewCount;
-	}
-
-	public LocalDateTime getCreateAt() {
-		return this.createAt;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -93,63 +84,14 @@ public class Product {
 		return Objects.hash(this.seq);
 	}
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("seq", this.seq)
-				.append("name", this.name)
-				.append("details", this.details)
-				.append("reviewCount", this.reviewCount)
-				.append("createAt", this.createAt)
-				.toString();
-	}
-
-	static public class Builder {
-		private Long seq;
-		private String name;
-		private String details;
-		private int reviewCount;
-		private LocalDateTime createAt;
-
-		public Builder() {
-		}
-
-		public Builder(Product product) {
-			this.seq = product.seq;
-			this.name = product.name;
-			this.details = product.details;
-			this.reviewCount = product.reviewCount;
-			this.createAt = product.createAt;
-		}
-
-		public Builder seq(Long seq) {
-			this.seq = seq;
-			return this;
-		}
-
-		public Builder name(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public Builder details(String details) {
-			this.details = details;
-			return this;
-		}
-
-		public Builder reviewCount(int reviewCount) {
-			this.reviewCount = reviewCount;
-			return this;
-		}
-
-		public Builder createAt(LocalDateTime createAt) {
-			this.createAt = createAt;
-			return this;
-		}
-
-		public Product build() {
-			return new Product(this.seq, this.name, this.details, this.reviewCount, this.createAt);
-		}
+	public ProductDto toProductDto() {
+		ProductDto productDto = new ProductDto();
+		productDto.setSeq(seq);
+		productDto.setName(name);
+		productDto.setDetails(details);
+		productDto.setReviewCount(reviewCount);
+		productDto.setCreateAt(createAt);
+		return productDto;
 	}
 
 }

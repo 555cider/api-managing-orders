@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ProductDto {
 
-    private Long seq;
+    private long seq;
 
     private String name;
 
@@ -21,14 +21,17 @@ public class ProductDto {
 
     public ProductDto(Product source) {
         copyProperties(source, this);
-        this.details = source.getDetails().orElse(null);
+        this.details = source.getDetails();
     }
 
-    public Long getSeq() {
+    public ProductDto() {
+    }
+
+    public long getSeq() {
         return seq;
     }
 
-    public void setSeq(Long seq) {
+    public void setSeq(long seq) {
         this.seq = seq;
     }
 

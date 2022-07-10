@@ -3,7 +3,7 @@ package com.github.prgrms.configures.web;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class SimplePageRequest implements Pageable {
+public class SimplePageRequest {
 
   private final long offset;
   private final int size;
@@ -17,12 +17,10 @@ public class SimplePageRequest implements Pageable {
     this.size = size;
   }
 
-  @Override
   public long getOffset() {
     return offset;
   }
 
-  @Override
   public int getSize() {
     return size;
   }

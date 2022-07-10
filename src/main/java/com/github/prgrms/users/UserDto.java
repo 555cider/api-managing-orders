@@ -17,7 +17,7 @@ public class UserDto {
 
     public UserDto(User source) {
         copyProperties(source, this);
-        this.lastLoginAt = source.getLastLoginAt().orElse(null);
+        this.lastLoginAt = source.getLastLoginAt();
     }
 
     public String getName() {
