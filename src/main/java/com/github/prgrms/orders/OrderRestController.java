@@ -5,10 +5,8 @@ import static com.github.prgrms.utils.ApiUtils.success;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +21,11 @@ import com.github.prgrms.utils.ApiUtils.ApiResult;
 @RequestMapping("/api/orders")
 public class OrderRestController {
 
-	@Autowired
-	private OrderService orderService;
+	private final OrderService orderService;
 
-	@Autowired
-	private ReviewService reviewService;
+	public OrderRestController(OrderService orderService) {
+		this.orderService = orderService;
+	}
 
 	@GetMapping(path = "")
 	public ApiResult<List<OrderDto>> findAll(@AuthenticationPrincipal JwtAuthentication authentication,
@@ -36,15 +34,10 @@ public class OrderRestController {
 	}
 
 	@GetMapping(path = "{id}")
-	public ApiResult findBySeq(@AuthenticationPrincipal JwtAuthentication authentication,
+	public ApiResult findById(@AuthenticationPrincipal JwtAuthentication authentication,
 			@PathVariable(name = "id") Long seq) {
 		try {
-			OrderDto orderDto = orderService.findBySeq(seq);
-			ReviewDto reviewDto = orderDto.getReview();
-			if (!ObjectUtils.isEmpty(reviewDto)) {
-				reviewDto = reviewService.findBySeq(reviewDto.getSeq());
-				orderDto.setReview(reviewDto);
-			}
+			OrderDto orderDto = orderService.findById(seq);
 			return success(orderDto);
 		} catch (Exception e) {
 			return success(false);

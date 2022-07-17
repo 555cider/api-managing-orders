@@ -7,22 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface OrderService {
 
-	@Transactional(readOnly = true)
 	public List<OrderDto> findAll(Pageable pageable);
 
-	@Transactional(readOnly = true)
-	public OrderDto findBySeq(Long orderSeq);
+	public OrderDto findById(Long seq);
+
+	public Boolean accept(Long seq, Long userSeq);
 
 	@Transactional
-	public Boolean accept(Long orderSeq, Long userSeq);
+	public Boolean reject(Long seq, Long userSeq, String rejectMsg);
 
 	@Transactional
-	public Boolean reject(Long orderSeq, Long userSeq, String rejectMsg);
+	public Boolean shipping(Long seq, Long userSeq);
 
 	@Transactional
-	public Boolean shipping(Long orderSeq, Long userSeq);
-
-	@Transactional
-	public Boolean complete(Long orderSeq, Long userSeq);
+	public Boolean complete(Long seq, Long userSeq);
 
 }

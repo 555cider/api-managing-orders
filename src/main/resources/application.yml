@@ -10,22 +10,24 @@ spring:
     console:
       enabled: true
       path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
   datasource:
     driver-class-name: org.h2.Driver
-    url: "jdbc:h2:mem:spring_assignments;MODE=MYSQL;DB_CLOSE_DELAY=-1"
+    url: jdbc:h2:mem:spring_assignments;MODE=MYSQL;DB_CLOSE_DELAY=-1
     username: tester
     password: 1234
-    hikari:
-      minimum-idle: 1
-      maximum-pool-size: 5
-      pool-name: H2_DB
-  sql:
-    init:
-      schema-locations: classpath*:schema-h2.sql
-      data-locations: classpath*:data-h2.sql
-      platform: h2
-  main:
-    allow-circular-references: true
+    initialization-mode: always
+    sql-script-encoding: UTF-8
+    schema: classpath*:schema-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
+    data: classpath*:data-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
 server:
   port: 5000
 jwt:

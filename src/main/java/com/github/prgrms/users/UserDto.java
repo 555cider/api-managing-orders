@@ -7,57 +7,28 @@ import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserDto {
 
     private String name;
+
     private Email email;
+
     private int loginCount;
+
     private LocalDateTime lastLoginAt;
+
     private LocalDateTime createAt;
 
-    public UserDto(User source) {
-        copyProperties(source, this);
-        this.lastLoginAt = source.getLastLoginAt();
+    public UserDto() {
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Email getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
-    }
-
-    public int getLoginCount() {
-        return this.loginCount;
-    }
-
-    public void setLoginCount(int loginCount) {
-        this.loginCount = loginCount;
-    }
-
-    public LocalDateTime getLastLoginAt() {
-        return this.lastLoginAt;
-    }
-
-    public void setLastLoginAt(LocalDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return this.createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public UserDto(User user) {
+        copyProperties(user, this);
     }
 
     @Override

@@ -1,4 +1,4 @@
 #!/bin/bash
 mkdir /tmp/project
 cp -a ./ /tmp/project
-gradle clean test
+gradle clean -x test

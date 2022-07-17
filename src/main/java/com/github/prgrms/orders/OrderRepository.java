@@ -1,17 +1,13 @@
 package com.github.prgrms.orders;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface OrderRepository extends PagingAndSortingRepository<Order, Long> {
-
-    Page<Order> findAll(Pageable pageable);
-
-    Order findBySeq(Long seq);
 
     @Modifying
     @Query(value = "UPDATE orders SET state = ACCEPTED WHERE seq = :orderSeq AND user_seq = :userSeq AND state = REQUESTED", nativeQuery = true)

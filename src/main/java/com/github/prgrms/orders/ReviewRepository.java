@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    Review findBySeq(Long seq);
-
     @ManyToOne
     @Query(value = "INSERT INTO reviews ( user_seq, product_seq, content ) VALUES ( :userSeq, :productSeq, :content )", nativeQuery = true)
     Long review(@Param("userSeq") Long userSeq, @Param("productSeq") Long productSeq, @Param("content") String content);

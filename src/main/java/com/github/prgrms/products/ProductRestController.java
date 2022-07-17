@@ -4,7 +4,6 @@ import static com.github.prgrms.utils.ApiUtils.success;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +16,11 @@ import com.github.prgrms.utils.ApiUtils.ApiResult;
 @RequestMapping("api/products")
 public class ProductRestController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductRestController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public ApiResult<List<ProductDto>> findAll(Pageable pageable) {
@@ -26,8 +28,8 @@ public class ProductRestController {
     }
 
     @GetMapping(path = "{id}")
-    public ApiResult<ProductDto> findBySeq(@PathVariable(name = "id") Long seq) {
-        return success(productService.findBySeq(seq));
+    public ApiResult<ProductDto> findById(@PathVariable(name = "id") Long seq) {
+        return success(productService.findById(seq));
     }
 
 }

@@ -54,7 +54,7 @@ public class UserRestController {
 	@GetMapping(path = "me")
 	public ApiResult<UserDto> me(
 			@AuthenticationPrincipal JwtAuthentication authentication) {
-		return success(new UserDto(userService.findBySeq(authentication.id)));
+		return success(userService.findById(authentication.id));
 	}
 
 }

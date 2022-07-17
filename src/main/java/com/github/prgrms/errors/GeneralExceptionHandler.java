@@ -4,8 +4,6 @@ import static com.github.prgrms.utils.ApiUtils.error;
 
 import javax.validation.ConstraintViolationException;
 
-import com.github.prgrms.utils.ApiUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import com.github.prgrms.utils.ApiUtils;
 
 @ControllerAdvice
 public class GeneralExceptionHandler {
@@ -46,7 +46,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class, ConstraintViolationException.class,
-            MethodArgumentNotValidException.class, HttpMessageNotReadableException.class, ReviewException.class })
+            MethodArgumentNotValidException.class, HttpMessageNotReadableException.class, ReviewException.class,
+            InvalidParameterException.class })
     public ResponseEntity<?> handleBadRequestException(Exception e) {
         log.debug("Bad request exception occurred: {}", e.getMessage(), e);
         return this.newResponse(e, HttpStatus.BAD_REQUEST);

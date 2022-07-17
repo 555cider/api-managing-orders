@@ -77,15 +77,24 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().headers().disable().exceptionHandling()
-                .accessDeniedHandler(this.accessDeniedHandler)
-                .authenticationEntryPoint(this.unauthorizedHandler).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers("/api/users/login").permitAll().antMatchers("/api/products/**")
-                .permitAll().antMatchers("/api/**").hasRole(Role.USER.name()).anyRequest()
-                .permitAll().and().formLogin().disable();
+        http
+                .csrf().disable() // CSRF 면제
+                .headers().disable()
+                .exceptionHandling().accessDeniedHandler(this.accessDeniedHandler)
+                .authenticationEntryPoint(this.unauthorizedHandler)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/users/login").permitAll() // Spring Security 적용 면제
+                .antMatchers("/api/products/**").permitAll() // Spring Security 적용 면제
+                .antMatchers("/api/**").hasRole(Role.USER.name()).anyRequest().permitAll() // Spring Security 적용 면제
+                .and()
+                .formLogin().disable();
         http.addFilterBefore(this.jwtAuthenticationTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
     }
+    // 관련 링크 참고.
+    // (https://github.com/HomoEfficio/dev-tips/blob/master/Spring%20Security%EC%99%80%20h2-console%20%ED%95%A8%EA%BB%98%20%EC%93%B0%EA%B8%B0.md)
 
 }

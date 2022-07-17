@@ -1,41 +1,47 @@
 package com.github.prgrms.users;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service(value = "UserService")
+import com.google.common.base.Preconditions;
+
+@Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Transactional
     public User login(Email email, String password) {
-        checkNotNull(password, "password must be provided");
-        User user = this.findByEmail(email);
+        Preconditions.checkNotNull(email, "email must be provided");
+        Preconditions.checkNotNull(password, "password must be provided");
+
+        User user = this.userRepository.findByEmail(email.getAddress());
+
         user.login(this.passwordEncoder, password);
         user.afterLoginSuccess();
         userRepository.update(user.getSeq());
+
         return user;
     }
 
     @Transactional(readOnly = true)
-    public User findBySeq(Long seq) {
-        checkNotNull(seq, "userId must be provided");
-        return userRepository.findBySeq(seq);
-    }
+    public UserDto findById(Long seq) {
+        Preconditions.checkNotNull(seq, "userId must be provided");
 
-    @Transactional(readOnly = true)
-    public User findByEmail(Email email) {
-        checkNotNull(email, "email must be provided");
-        return userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findById(seq);
+        Preconditions.checkArgument(user.isPresent(), "No user was found");
+
+        return new UserDto(user.get());
     }
 
 }

@@ -29,9 +29,12 @@ public class OrderDto {
 
     public OrderDto(Order source) {
         copyProperties(source, this);
-        this.productId = source.getProductEntity().getSeq();
-        this.requestMessage = source.getRequestMsg();
-        this.rejectMessage = source.getRejectMsg();
+        if (source != null) {
+            this.productId = source.getProductEntity().getSeq();
+            this.review = new ReviewDto(source.getReviewEntity());
+            this.requestMessage = source.getRequestMsg();
+            this.rejectMessage = source.getRejectMsg();
+        }
     }
 
     public Long getSeq() {
