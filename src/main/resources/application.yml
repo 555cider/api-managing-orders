@@ -4,32 +4,33 @@ spring:
     name: programmers spring assignments
   messages:
     basename: i18n/messages
-    encoding: UTF-8
+    encoding: UTF-8 # (기본값) 생략 무방
     cache-duration: PT1H
   h2:
     console:
       enabled: true
-      path: /h2-console
+      path: /h2-console # (기본값) 생략 무방
       settings:
-        trace: false
-        web-allow-others: false
+        trace: false  # (기본값) 생략 무방
+        web-allow-others: false # (기본값) 생략 무방
   datasource:
+    platform: h2
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:spring_assignments;MODE=MYSQL;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:spring_assignments;MODE=MYSQL;DB_CLOSE_DELAY=-1;
     username: tester
     password: 1234
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 5
+      pool-name: H2_DB
+    schema: classpath:schema-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
+    # data: classpath:data-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
     initialization-mode: always
-    sql-script-encoding: UTF-8
-    schema: classpath*:schema-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
-    data: classpath*:data-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    generate-ddl: true
     show-sql: true
 server:
-  port: 5000
+  port: 8080 # (기본값) 생략 무방
 jwt:
   token:
     header: X-PRGRMS-AUTH

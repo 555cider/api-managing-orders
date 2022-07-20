@@ -174,7 +174,7 @@ public UserServiceImpl(UserRepository userRepository) {
 
 ### 3.
 ```java
-grapd)
+```
 
 <br>
 <br>
@@ -185,4 +185,18 @@ grapd)
 ```
 // org.springframework.context.ApplicationContextException
 // No property 'update' found for type 'User'
+```
+
+### 2.
+```
+// 오류: 기본 클래스 com.github.prgrms.Application을(를) 찾거나 로드할 수 없습니다.
+// 원인: java.lang.ClassNotFoundException: com.github.prgrms.Application
+```
+```
+// VSCODE에선 "Java: Clean Java Language Server Workspace"
+```
+
+### 3. application.yml
+```yml
+# H2 데이터베이스의 설정은 링크 참고. (http://www.h2database.com/html/features.html)
 ```
