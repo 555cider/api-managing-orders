@@ -40,6 +40,42 @@ dependencies {
 // 관련 링크 참고. (https://stackoverflow.com/questions/43574426/how-to-resolve-java-lang-noclassdeffounderror-javax-xml-bind-jaxbexception)
 ```
 
+### 3.
+```kotlin
+dependencies {
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+        exclude(group = "com.vaadin.external.google", module = "android-json")
+        exclude(group = "junit", module = "junit")
+    }
+    // exclude 추가
+    // 관련 링크 참고. (https://tomgregory.com/how-to-exclude-gradle-dependencies/)
+}
+```
+### 4. plugins에서 버전 선언 시도 → 실패
+```kotlin
+plugins {
+    ~
+}
+val springBootVersion = "2.4.1"
+val lombokVersion = "1.18.24"
+```
+```kotlin
+plugins {
+    ~
+    id("org.springframework.boot") version "2.4.1"
+    id("org.projectlombok") version "1.18.24"
+}
+// plugins에서 group 버전 값을 선언해 줄 수 있을까 싶어 수정했으나, 바로 오류 발생.
+```
+```kotlin
+plugins {
+    ~
+}
+val springBootVersion = "2.4.1"
+val lombokVersion = "1.18.24"
+// 원상 복귀
+```
+
 <br>
 <br>
 <br>
@@ -182,21 +218,59 @@ public UserServiceImpl(UserRepository userRepository) {
 
 # 기타
 ### 1. JpaConfigure 추가
-```
+```java
 // org.springframework.context.ApplicationContextException
 // No property 'update' found for type 'User'
 ```
 
-### 2.
-```
-// 오류: 기본 클래스 com.github.prgrms.Application을(를) 찾거나 로드할 수 없습니다.
-// 원인: java.lang.ClassNotFoundException: com.github.prgrms.Application
-```
-```
-// VSCODE에선 "Java: Clean Java Language Server Workspace"
+### 2. class 파일 삭제 후 실행 불가
+```java
+// 기본 클래스 com.github.prgrms.Application을(를) 찾거나 로드할 수 없습니다. ~ java.lang.ClassNotFoundException: com.github.prgrms.Application
+// 해결 방법을 찾아보니 Eclipse 쪽 정보만 많이 나왔다. 그럼에도 고집 부리며 VSCode로 해결하려다, 결국 Eclipse로 해결. 같은 소스인데 이러는 걸 보면, VSCode나 Eclipse 등의 각 IDE는 (실행 여부에 영향을 줄 만큼 중요한) 실행 환경 파일이 별도로 존재하는 듯하다.
+// 이게 과연 해결인 것인지는 모르겠는데, Eclipse에서는 그냥 실행되었던 것으로 기억한다.
 ```
 
-### 3. application.yml
+### 3. application.yml 설정
 ```yml
-# H2 데이터베이스의 설정은 링크 참고. (http://www.h2database.com/html/features.html)
+# H2 DB 설정은 링크 참고. (http://www.h2database.com/html/features.html)
+# JPA 설정은 링크 참고. (https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html)
+```
+
+### 4. H2 DB에서 컬럼의 default 값 설정 관련 시도 중 극히 일부
+```yml
+    spring:
+        datasource:
+            schema: classpath:schema-h2.sql
+            data: classpath:data-h2.sql
+    # 1) resource 내의 schema.sql, data.sql을 기본으로 인식
+    # 2) schema-${platform}.sql, data-${platform}.sql
+    # 3) spring.datasource.schema, ~.data 에서 지정한 sql
+    # 실패
+```
+```kotlin
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+        exclude(group = "com.vaadin.external.google", module = "android-json")
+        exclude(group = "junit", module = "junit")
+    }
+    // 실패. 혹시 Maven의 의존성 설정을 그대로 옮기지 않아서 그런 것인가 의심했지만, 관련 없었다.
+```
+```java
+	@Builder.Default()
+	private LocalDateTime createAt = LocalDateTime.now();
+    // 실패: 하다하다 entity 쪽까지 손대고 있었다. DB 생성할 때, enity에 설정된 값들을 읽어들이지 않을까 희망 회로 돌리면서.
+```
+```java
+    @PrePersist
+	public void prePersist() {
+		this.createAt = LocalDateTime.now();
+	}
+    // 실패: 동일.
+```
+```yml
+    spring:
+        jpa:
+            hibernate:
+                ddl-auto: none
+    # 성공: 관련 링크 참고. (https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html)
+    # 원인은 1) gradle, 2) jpa, 3) 기타 가운데 2) jpa 였다. Hibernate가 자동으로 스키마를 생성하게 할지, 직접 sql로 생성할지에 대한 설정이 필요했다.
 ```

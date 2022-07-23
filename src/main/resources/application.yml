@@ -23,12 +23,11 @@ spring:
       minimum-idle: 1
       maximum-pool-size: 5
       pool-name: H2_DB
-    schema: classpath:schema-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
-    # data: classpath:data-h2.sql  # 미지정 시, resource 내의 schema.sql을 기본으로 인식
-    initialization-mode: always
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
+    hibernate:
+      ddl-auto: none
 server:
   port: 8080 # (기본값) 생략 무방
 jwt:

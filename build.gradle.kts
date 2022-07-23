@@ -1,10 +1,11 @@
 plugins {
     java
-    `maven-publish`
+    `maven-publish` // repositories\maven에 "-publish" 붙은...
+    // id("org.springframework.boot") version "2.4.1"
+    // id("org.projectlombok") version "1.18.24"
 }
 
 repositories {
-    mavenLocal()
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
@@ -31,10 +32,13 @@ dependencies {
     implementation("com.auth0:java-jwt:3.12.0")
     implementation("com.google.guava:guava:30.1-jre")
     implementation("com.zaxxer:HikariCP:3.4.5")
-    runtimeOnly("com.h2database:h2:1.4.199") // 수정(implementation → runtimeOnly)
+    compileOnly("com.h2database:h2:1.4.199") // 수정(implementation → comfileOnly)
 
     testImplementation("org.springframework.security:spring-security-test:5.4.2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+        exclude(group = "com.vaadin.external.google", module = "android-json")
+        exclude(group = "junit", module = "junit")
+    }
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}") // JPA
     implementation("org.springframework.boot:spring-boot-starter-tomcat:${springBootVersion}") // Tomcat
@@ -42,29 +46,11 @@ dependencies {
 
     implementation("javax.xml.bind:jaxb-api:2.3.0") // Java 9+ 인 경우에는 불필요
 
-    annotationProcessor("org.projectlombok:lombok:${lombokVersion}") // Lombok
-    compileOnly ("org.projectlombok:lombok:${lombokVersion}") // Lombok
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}") // Lombok
+    compileOnly("org.projectlombok:lombok:${lombokVersion}") // Lombok
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}") // Lombok
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
-
 group = "com.github.prgrms"
-version = "1.0.0"
+version = "1.0.0-SNAPSHOT"
 description = "api-managing-orders"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
-}
-
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
-}
