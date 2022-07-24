@@ -15,10 +15,12 @@ import com.github.prgrms.users.User;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "orders")
@@ -52,8 +54,7 @@ public class Order {
 
 	private LocalDateTime createAt;
 
-	public Order(Long seq, User userEntity, Product productEntity, Review reviewEntity,
-			String state, String requestMsg,
+	public Order(Long seq, User userEntity, Product productEntity, Review reviewEntity, String state, String requestMsg,
 			String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
 		this.seq = seq;
 		this.userEntity = userEntity;

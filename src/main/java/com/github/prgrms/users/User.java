@@ -7,16 +7,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.github.prgrms.security.Jwt;
+import com.google.common.base.Preconditions;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "users")
@@ -48,11 +52,11 @@ public class User {
 
 	public User(Long seq, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt,
 			LocalDateTime createAt) {
-		// checkArgument(isNotEmpty(name), "name must be provided");
-		// checkArgument((name.length() >= 1) && (name.length() <= 10), "name length
-		// must be between 1 and 10");
-		// checkNotNull(email, "email must be provided");
-		// checkNotNull(passwd, "password must be provided");
+		Preconditions.checkArgument(ObjectUtils.isNotEmpty(name), "name must be provided");
+		Preconditions.checkArgument((name.length() >= 1) && (name.length() <= 10),
+				"name length must be between 1 and 10");
+		Preconditions.checkNotNull(email, "email must be provided");
+		Preconditions.checkNotNull(passwd, "password must be provided");
 		this.seq = seq;
 		this.name = name;
 		this.email = email;

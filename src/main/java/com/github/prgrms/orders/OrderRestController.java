@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,7 +30,7 @@ public class OrderRestController {
 
 	@GetMapping(path = "")
 	public ApiResult<List<OrderDto>> findAll(@AuthenticationPrincipal JwtAuthentication authentication,
-			Pageable pageable) {
+			@PageableDefault(size = 5, page = 0) Pageable pageable) {
 		return success(orderService.findAll(pageable));
 	}
 

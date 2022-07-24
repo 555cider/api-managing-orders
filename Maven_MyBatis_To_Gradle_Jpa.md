@@ -109,6 +109,14 @@ private LocalDateTime createAt;
 private LocalDateTime createAt;
 ```
 
+### 3. @NoArgsConstructor
+```java
+    @NoArgsConstructor
+    // org.springframework.orm.jpa.JpaSystemException:
+    // No default constructor for entity:
+    // nested exception is org.hibernate.InstantiationException:
+```
+
 <br>
 <br>
 <br>
@@ -210,6 +218,23 @@ public UserServiceImpl(UserRepository userRepository) {
 
 ### 3.
 ```java
+```
+
+<br>
+<br>
+<br>
+
+# Controller 이력
+### 1. Paging 기본값 설정
+```java
+	public ApiResult<List<OrderDto>> findAll(~, Pageable pageable) { ~ }
+```
+```java
+	public ApiResult<List<OrderDto>> findAll(~, @PageableDefault(size = 5) Pageable pageable) { ~ }
+```
+```java
+    productService.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Order.desc("seq"))));
+    // test에서 역순을 원해서 정렬 넣음
 ```
 
 <br>
