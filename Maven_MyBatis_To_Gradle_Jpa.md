@@ -28,7 +28,7 @@ dependencies {
     ~
 }
 // UnsatisfiedDependencyException: ~.
-//  BeanCreationException: ~.
+// BeanCreationException: ~.
 // ClassNotFoundException: javax.xml.bind.JAXBException
 ```
 ```kotlin
@@ -111,11 +111,29 @@ private LocalDateTime createAt;
 
 ### 3. @NoArgsConstructor
 ```java
-    @NoArgsConstructor
     // org.springframework.orm.jpa.JpaSystemException:
     // No default constructor for entity:
     // nested exception is org.hibernate.InstantiationException:
 ```
+```java
+    @NoArgsConstructor
+```
+
+### 4.
+```java
+	@GeneratedValue
+	private Long seq;
+    // InvalidDataAccessResourceUsageException
+    // SQL Error: 90036, SQLState: 90036
+    // Sequence "HIBERNATE_SEQUENCE" not found;
+```
+```java
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long seq;
+    // 별도의 Sequence가 아니라 AutoIncrement인 경우에 해당
+    // 관련 링크 참고. (https://velog.io/@gillog/JPA-%EA%B8%B0%EB%B3%B8-%ED%82%A4-%EC%83%9D%EC%84%B1-%EC%A0%84%EB%9E%B5IDENTITY-SEQUENCE-TABLE)
+```
+
 
 <br>
 <br>
@@ -161,6 +179,20 @@ int updateReviewCountBySeq(@Param("seq") Long seq);
 @Modifying
 @Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
 int updateReviewCountBySeq(@Param("seq") Long seq);
+// InvalidDataAccessApiUsageException
+```
+```java
+@Modifying(clearAutomatically = true)
+@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// InvalidDataAccessApiUsageException
+```
+```java
+@Modifying(clearAutomatically = true)
+@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = #{seq}", nativeQuery = true)
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// InvalidDataAccessApiUsageException
+// clearAutomatically, flushAutomatically 에 대해선 링크 참고. (https://freedeveloper.tistory.com/154)
 ```
 
 ### 3.
@@ -178,12 +210,25 @@ int reject(@Param("orderSeq") Long orderSeq, @Param("rejectMsg") String rejectMs
 
 ### 4.
 ```java
-// Field userRepository in com.github.prgrms.users.UserServiceImpl required a bean of type 'com.github.prgrms.users.UserRepository' that could not be found.
+    // Field userRepository in com.github.prgrms.users.UserServiceImpl required a bean of type 'com.github.prgrms.users.UserRepository' that could not be found.
 ```
 
 ```java
-// UnsatisfiedDependencyException: Error creating bean with name 'UserService': Unsatisfied dependency expressed through field 'userRepository';
+    // UnsatisfiedDependencyException: Error creating bean with name 'UserService': Unsatisfied dependency expressed through field 'userRepository';
 ```
+
+### 5. save 메소드에 맞는 파라미터(entity)로
+```java
+    Long reviewSeq = reviewRepository.review(userSeq, order.getProductSeq(), content);
+```
+```java
+    Review review = new Review(new User(userSeq), new Product(order.get().getProduct().getSeq()), content);
+	review = reviewRepository.save(review);
+```
+
+
+
+
 
 <br>
 <br>

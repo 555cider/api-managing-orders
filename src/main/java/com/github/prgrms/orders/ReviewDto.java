@@ -19,7 +19,7 @@ public class ReviewDto {
 
     public ReviewDto(Review source) {
         copyProperties(source, this);
-        this.productId = source.getProductEntity().getSeq();
+        this.productId = source.getProduct().getSeq();
     }
 
     public Long getSeq() {

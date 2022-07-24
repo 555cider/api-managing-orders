@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.prgrms.errors.InvalidParameterException;
 import com.github.prgrms.errors.ReviewException;
 import com.github.prgrms.security.JwtAuthentication;
 import com.github.prgrms.utils.ApiUtils.ApiResult;
@@ -30,14 +29,11 @@ public class ReviewRestController {
 
 	@PostMapping(path = "{id}/review")
 	public ApiResult<ReviewDto> review(@AuthenticationPrincipal JwtAuthentication authentication,
-			@PathVariable(name = "id") Long seq, @Valid @RequestBody Map<String, String> requestBodyMap) {
+			@PathVariable(name = "id") Long orderSeq, @Valid @RequestBody Map<String, String> requestBodyMap) {
 		String content = requestBodyMap == null ? null : requestBodyMap.get("content");
-		if (content == null) {
-			throw new InvalidParameterException("content must be provided");
-		}
 		try {
-			Long reviewSeq = reviewService.review(authentication.id, seq, content);
-			return success(reviewService.findById(reviewSeq));
+			ReviewDto reviewDto = reviewService.review(authentication.id, orderSeq, content);
+			return success(reviewDto);
 		} catch (Exception e) {
 			throw new ReviewException("");
 		}

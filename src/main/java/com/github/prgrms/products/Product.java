@@ -38,6 +38,10 @@ public class Product {
 
 	private LocalDateTime createAt;
 
+	public Product(Long seq) {
+		this.seq = seq;
+	}
+
 	public Product(String name, String details) {
 		this(null, name, details, 0, null);
 	}

@@ -7,10 +7,10 @@ public class Const {
 				"SHIPPING"),
 		COMPLETED("COMPLETED");
 
-		public String state;
+		public String str;
 
-		State(String state) {
-			this.state = state;
+		State(String str) {
+			this.str = str;
 		}
 	}
 

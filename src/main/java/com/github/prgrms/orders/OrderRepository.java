@@ -1,13 +1,13 @@
 package com.github.prgrms.orders;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderRepository extends PagingAndSortingRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Modifying
     @Query(value = "UPDATE orders SET state = ACCEPTED WHERE seq = :orderSeq AND user_seq = :userSeq AND state = REQUESTED", nativeQuery = true)
@@ -24,10 +24,5 @@ public interface OrderRepository extends PagingAndSortingRepository<Order, Long>
     @Modifying
     @Query(value = "UPDATE orders SET state = COMPLETE WHERE seq = :orderSeq AND user_seq = :userSeq AND state = SHIPPING", nativeQuery = true)
     int complete(@Param("orderSeq") Long orderSeq, @Param("userSeq") Long userSeq);
-
-    @Modifying
-    @Query(value = "UPDATE orders SET review_seq = :reviewSeq WHERE seq = :orderSeq AND user_seq = :userSeq", nativeQuery = true)
-    int updateReviewSeq(@Param("orderSeq") Long orderSeq, @Param("userSeq") Long userSeq,
-            @Param("reviewSeq") Long reviewSeq);
 
 }

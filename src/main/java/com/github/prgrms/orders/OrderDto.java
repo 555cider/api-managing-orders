@@ -30,8 +30,8 @@ public class OrderDto {
     public OrderDto(Order source) {
         copyProperties(source, this);
         if (source != null) {
-            this.productId = source.getProductEntity().getSeq();
-            this.review = new ReviewDto(source.getReviewEntity());
+            this.productId = source.getProduct().getSeq();
+            this.review = new ReviewDto(source.getReview());
             this.requestMessage = source.getRequestMsg();
             this.rejectMessage = source.getRejectMsg();
         }

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import com.github.prgrms.products.Product;
 import com.github.prgrms.users.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "orders")
@@ -32,15 +34,15 @@ public class Order {
 
 	@ManyToOne
 	@JoinColumn(name = "user_seq", referencedColumnName = "seq")
-	private User userEntity;
+	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "product_seq", referencedColumnName = "seq")
-	private Product productEntity;
+	private Product product;
 
 	@ManyToOne
 	@JoinColumn(name = "review_seq", referencedColumnName = "seq")
-	private Review reviewEntity;
+	private Review review;
 
 	private String state;
 
@@ -53,20 +55,6 @@ public class Order {
 	private LocalDateTime rejectedAt;
 
 	private LocalDateTime createAt;
-
-	public Order(Long seq, User userEntity, Product productEntity, Review reviewEntity, String state, String requestMsg,
-			String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
-		this.seq = seq;
-		this.userEntity = userEntity;
-		this.productEntity = productEntity;
-		this.reviewEntity = reviewEntity;
-		this.state = state;
-		this.requestMsg = requestMsg;
-		this.rejectMsg = rejectMsg;
-		this.completedAt = completedAt;
-		this.rejectedAt = rejectedAt;
-		this.createAt = createAt;
-	}
 
 	@Override
 	public boolean equals(Object o) {
