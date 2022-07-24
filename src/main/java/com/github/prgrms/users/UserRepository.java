@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
     @Modifying
-    @Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+    @Query(value = "UPDATE users SET login_count = login_count + 1 WHERE seq = :seq", nativeQuery = true)
     int update(@Param("seq") Long seq);
 
 }

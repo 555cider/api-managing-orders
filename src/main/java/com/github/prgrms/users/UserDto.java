@@ -29,6 +29,7 @@ public class UserDto {
 
     public UserDto(User user) {
         copyProperties(user, this);
+        this.setEmail(Email.of(user.getEmail()));
     }
 
     @Override
