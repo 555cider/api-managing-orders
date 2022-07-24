@@ -189,10 +189,17 @@ int updateReviewCountBySeq(@Param("seq") Long seq);
 ```
 ```java
 @Modifying(clearAutomatically = true)
-@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = #{seq}", nativeQuery = true)
+@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
 int updateReviewCountBySeq(@Param("seq") Long seq);
 // InvalidDataAccessApiUsageException
 // clearAutomatically, flushAutomatically 에 대해선 링크 참고. (https://freedeveloper.tistory.com/154)
+```
+```java
+@Modifying(clearAutomatically = true)
+@Query(value = "UPDATE User SET review_count = review_count + 1 WHERE seq = :seq")
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// UPDATE 뒤에는 테이블 명이 아니라 Entity 클래스 명이 위치해야 했다. 대소문자도 구분.
+// 혹은 @Entity에 name을 테이블 명으로 설정해주면 된다.
 ```
 
 ### 3.
@@ -206,6 +213,13 @@ int reject(@Param("orderSeq") Long orderSeq, String rejectMsg);
 @Modifying
 @Query(value = "UPDATE orders SET state = REJECTED, reject_msg = :rejectMsg, rejected_At = now() WHERE seq = :orderSeq", nativeQuery = true)
 int reject(@Param("orderSeq") Long orderSeq, @Param("rejectMsg") String rejectMsg);
+// Column "REJECTED" not found; SQL statement: ~.
+```
+```java
+@Modifying
+@Query(value = "UPDATE orders SET state = 'REJECTED', reject_msg = :rejectMsg, rejected_At = now() WHERE seq = :orderSeq", nativeQuery = true)
+int reject(@Param("orderSeq") Long orderSeq, @Param("rejectMsg") String rejectMsg);
+// 문자열은 ''로 감싸기
 ```
 
 ### 4.

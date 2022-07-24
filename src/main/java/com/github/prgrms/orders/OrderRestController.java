@@ -48,7 +48,7 @@ public class OrderRestController {
 	@PatchMapping(path = "{id}/accept")
 	public ApiResult<Boolean> accept(@AuthenticationPrincipal JwtAuthentication authentication, @PathVariable Long id) {
 		try {
-			return success(orderService.accept(authentication.id, id));
+			return success(orderService.accept(id, authentication.id));
 		} catch (Exception e) {
 			return success(false);
 		}
@@ -59,7 +59,7 @@ public class OrderRestController {
 			@RequestBody Map<String, String> requestBodyMap) {
 		String message = requestBodyMap == null ? null : requestBodyMap.get("message");
 		try {
-			return success(orderService.reject(authentication.id, id, message));
+			return success(orderService.reject(id, authentication.id, message));
 		} catch (Exception e) {
 			return success(false);
 		}
@@ -69,7 +69,7 @@ public class OrderRestController {
 	public ApiResult<Boolean> shipping(@AuthenticationPrincipal JwtAuthentication authentication,
 			@PathVariable Long id) {
 		try {
-			return success(orderService.shipping(authentication.id, id));
+			return success(orderService.shipping(id, authentication.id));
 		} catch (Exception e) {
 			return success(false);
 		}
@@ -79,7 +79,7 @@ public class OrderRestController {
 	public ApiResult<Boolean> complete(@AuthenticationPrincipal JwtAuthentication authentication,
 			@PathVariable Long id) {
 		try {
-			return success(orderService.complete(authentication.id, id));
+			return success(orderService.complete(id, authentication.id));
 		} catch (Exception e) {
 			return success(false);
 		}

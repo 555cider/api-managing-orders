@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ReviewDto {
 
     private Long seq;
@@ -17,41 +22,11 @@ public class ReviewDto {
 
     private LocalDateTime createAt;
 
-    public ReviewDto(Review source) {
-        copyProperties(source, this);
-        this.productId = source.getProduct().getSeq();
-    }
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public ReviewDto(Review review) {
+        if (review != null) {
+            copyProperties(review, this);
+            this.productId = review.getProduct().getSeq();
+        }
     }
 
     @Override

@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class OrderDto {
 
     private Long seq;
@@ -27,86 +32,14 @@ public class OrderDto {
 
     private LocalDateTime createAt;
 
-    public OrderDto(Order source) {
-        copyProperties(source, this);
-        if (source != null) {
-            this.productId = source.getProduct().getSeq();
-            this.review = new ReviewDto(source.getReview());
-            this.requestMessage = source.getRequestMsg();
-            this.rejectMessage = source.getRejectMsg();
+    public OrderDto(Order order) {
+        if (order != null) {
+            copyProperties(order, this);
+            this.productId = order.getProduct().getSeq();
+            this.review = order.getReview() == null ? null : new ReviewDto(order.getReview());
+            this.requestMessage = order.getRequestMsg();
+            this.rejectMessage = order.getRejectMsg();
         }
-    }
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public ReviewDto getReview() {
-        return review;
-    }
-
-    public void setReview(ReviewDto review) {
-        this.review = review;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getRequestMessage() {
-        return requestMessage;
-    }
-
-    public void setRequestMessage(String requestMessage) {
-        this.requestMessage = requestMessage;
-    }
-
-    public String getRejectMessage() {
-        return rejectMessage;
-    }
-
-    public void setRejectMessage(String rejectMessage) {
-        this.rejectMessage = rejectMessage;
-    }
-
-    public LocalDateTime getCompletedA() {
-        return completedAt;
-    }
-
-    public void setCompleteAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public LocalDateTime getRejectedAt() {
-        return rejectedAt;
-    }
-
-    public void setRejectedAt(LocalDateTime rejectedAt) {
-        this.rejectedAt = rejectedAt;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
     }
 
     @Override
