@@ -5,16 +5,17 @@ import static com.github.prgrms.utils.ApiUtils.success;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.prgrms.configures.SimplePageRequest;
 import com.github.prgrms.security.JwtAuthentication;
 import com.github.prgrms.utils.ApiUtils.ApiResult;
 
@@ -30,8 +31,9 @@ public class OrderRestController {
 
 	@GetMapping(path = "")
 	public ApiResult<List<OrderDto>> findAll(@AuthenticationPrincipal JwtAuthentication authentication,
-			@PageableDefault(size = 5, page = 0) Pageable pageable) {
-		return success(orderService.findAll(pageable));
+			@RequestParam(name = "offset", defaultValue = "0") int offset,
+			@RequestParam(name = "size", defaultValue = "5") int size) {
+		return success(orderService.findAll(SimplePageRequest.of(offset, size, Sort.by("seq").descending())));
 	}
 
 	@GetMapping(path = "{id}")

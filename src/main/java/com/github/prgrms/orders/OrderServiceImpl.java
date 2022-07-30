@@ -1,7 +1,5 @@
 package com.github.prgrms.orders;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,17 +24,21 @@ public class OrderServiceImpl implements OrderService {
 
 	public List<OrderDto> findAll(Pageable pageable) {
 		Page<Order> orderPage = orderRepository.findAll(pageable);
-		List<OrderDto> orderList = orderPage.getContent().stream().map(order -> {
-			OrderDto orderDto = new OrderDto(order);
-			Optional<Review> review = reviewRepository.findById(orderDto.getReview().getSeq());
-			orderDto.setReview(new ReviewDto(review.get()));
-			return orderDto;
-		}).collect(Collectors.toList());
-		return orderList;
+		List<OrderDto> orderDtoList = orderPage.stream().map(
+				(order) -> {
+					OrderDto orderDto = new OrderDto(order);
+					if (orderDto.getReview() != null) {
+						Optional<Review> review = reviewRepository.findById(orderDto.getReview().getSeq());
+						orderDto.setReview(new ReviewDto(review.get()));
+					}
+					return orderDto;
+				}).collect(Collectors.toList());
+		return orderDtoList;
+
 	}
 
 	public OrderDto findById(Long seq) {
-		checkNotNull(seq, "orderId must be provided");
+		Preconditions.checkNotNull(seq, "orderId must be provided");
 
 		Optional<Order> order = orderRepository.findById(seq);
 		Preconditions.checkArgument(order.isPresent(), "No order was found");

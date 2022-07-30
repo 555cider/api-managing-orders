@@ -284,7 +284,7 @@ public UserServiceImpl(UserRepository userRepository) {
 <br>
 
 # Controller 이력
-### 1. Paging 기본값 설정
+### 1. Paging - 기본값 설정
 ```java
 	public ApiResult<List<OrderDto>> findAll(~, Pageable pageable) { ~ }
 ```
@@ -292,8 +292,45 @@ public UserServiceImpl(UserRepository userRepository) {
 	public ApiResult<List<OrderDto>> findAll(~, @PageableDefault(size = 5) Pageable pageable) { ~ }
 ```
 ```java
+	public ApiResult<List<OrderDto>> findAll(~, @PageableDefault(size = 5) Pageable pageable) { ~ }
+```
+
+### 2. Paging - 다른 파라미터 명
+```java
+	public ApiResult<List<OrderDto>> findAll(~, Pageable pageable)
+    // number, size는 받는데, offset은 못 받음.
+    // 즉, paging에 관한 파라미터 명이 다르게 정의된 경우 아래와 같이 사용
+```
+```java
+	public ApiResult<List<OrderDto>> findAll(~, @RequestParam("offset") int offset, @RequestParam("size") int size)
+```
+
+### 3. Paging - 정렬
+
+```java
     productService.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Order.desc("seq"))));
-    // test에서 역순을 원해서 정렬 넣음
+```
+```java
+    orderService.findAll(PageRequest.of(offset, size, Sort.by("seq").descending()));
+```
+
+### 4. Paging - 음수 입력 시
+```java
+    return success(orderService.findAll(PageRequest.of(offset, size, Sort.by("seq").descending())));
+    // offset, size에 음수 입력 시 오류 발생
+```
+```java
+    return success(orderService.findAll(SimplePageRequest.of(offset, size, Sort.by("seq").descending())));
+    // 오류 발생 대신 기본값으로 대체하도록 SimplePageRequest 별도로 만듦
+```
+
+### 5. Paging - null 입력 시
+```java
+	@RequestParam("offset") int offset,	@RequestParam("size") int size
+    // null이 들어오면 오류 발생
+```
+```java
+	@RequestParam(name = "offset", defaultValue = "0") int offset, @RequestParam(name = "size", defaultValue = "5") int size
 ```
 
 <br>
