@@ -19,24 +19,15 @@ public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
 
-	private final ReviewRepository reviewRepository;
-
-	public OrderServiceImpl(OrderRepository orderRepository, ReviewRepository reviewRepository) {
+	public OrderServiceImpl(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
-		this.reviewRepository = reviewRepository;
 	}
 
 	public List<OrderDto> findAll(Pageable pageable) {
 		Page<Order> orderPage = orderRepository.findAll(pageable);
-		List<OrderDto> orderDtoList = orderPage.stream().map(
-				(order) -> {
-					OrderDto orderDto = new OrderDto(order);
-					if (orderDto.getReview() != null) {
-						Optional<Review> review = reviewRepository.findById(orderDto.getReview().getSeq());
-						orderDto.setReview(new ReviewDto(review.get()));
-					}
-					return orderDto;
-				}).collect(Collectors.toList());
+		List<OrderDto> orderDtoList = orderPage.stream()
+				.map((order) -> new OrderDto(order))
+				.collect(Collectors.toList());
 		return orderDtoList;
 
 	}
@@ -44,10 +35,10 @@ public class OrderServiceImpl implements OrderService {
 	public OrderDto findById(Long seq) {
 		Preconditions.checkNotNull(seq, "orderId must be provided");
 
-		Optional<Order> order = orderRepository.findById(seq);
-		Preconditions.checkArgument(order.isPresent(), "No order was found");
+		Optional<Order> orderOpt = orderRepository.findById(seq);
+		Preconditions.checkArgument(orderOpt.isPresent(), "No order was found");
 
-		return new OrderDto(order.get());
+		return new OrderDto(orderOpt.get());
 	}
 
 	@Transactional
