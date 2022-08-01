@@ -140,7 +140,7 @@ private LocalDateTime createAt;
 <br>
 
 # Repository 이력
-### 1.
+### 1. 메소드 명
 ```java
 Order findOne(Long seq);
 // No property 'findOne' found for type 'Order'
@@ -153,15 +153,7 @@ Optional<Order> findById(Long seq);
 // 기본 제공이라 생략해도 무방하여 삭제
 ```
 
-### 2.
-```java
-int update(Long seq);
-// No property 'update' found for type 'User'
-```
-```java
-int updateReviewCountBySeq(Long seq);
-// No property 'updateReviewCountBySeq' found for type 'User'
-```
+### 2. 파라미터 스타일 (JDBC, JPA)
 ```java
 @Modifying
 @Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = ?")
@@ -171,38 +163,13 @@ int updateReviewCountBySeq(Long seq);
 ```java
 @Modifying
 @Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq")
-int updateReviewCountBySeq(@Param("seq") Long seq);
+int updateReviewCountBySeq(Long seq);
 // Validation failed for query for method ~.
 // users is not mapped.
-```
-```java
-@Modifying
-@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
-int updateReviewCountBySeq(@Param("seq") Long seq);
-// InvalidDataAccessApiUsageException
-```
-```java
-@Modifying(clearAutomatically = true)
-@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
-int updateReviewCountBySeq(@Param("seq") Long seq);
-// InvalidDataAccessApiUsageException
-```
-```java
-@Modifying(clearAutomatically = true)
-@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
-int updateReviewCountBySeq(@Param("seq") Long seq);
-// InvalidDataAccessApiUsageException
-// clearAutomatically, flushAutomatically 에 대해선 링크 참고. (https://freedeveloper.tistory.com/154)
-```
-```java
-@Modifying(clearAutomatically = true)
-@Query(value = "UPDATE User SET review_count = review_count + 1 WHERE seq = :seq")
-int updateReviewCountBySeq(@Param("seq") Long seq);
-// UPDATE 뒤에는 테이블 명이 아니라 Entity 클래스 명이 위치해야 했다. 대소문자도 구분.
-// 혹은 @Entity에 name을 테이블 명으로 설정해주면 된다.
+// -> 4번으로...
 ```
 
-### 3.
+### 3. 파라미터 지정
 ```java
 @Modifying
 @Query(value = "UPDATE orders SET state = REJECTED, reject_msg = :rejectMsg, rejected_At = now() WHERE seq = :orderSeq", nativeQuery = true)
@@ -222,13 +189,26 @@ int reject(@Param("orderSeq") Long orderSeq, @Param("rejectMsg") String rejectMs
 // 문자열은 ''로 감싸기
 ```
 
-### 4.
+### 4. 테이블 명이 아닌 Entity 클래스 명으로
 ```java
-    // Field userRepository in com.github.prgrms.users.UserServiceImpl required a bean of type 'com.github.prgrms.users.UserRepository' that could not be found.
+@Modifying
+@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// InvalidDataAccessApiUsageException
 ```
-
 ```java
-    // UnsatisfiedDependencyException: Error creating bean with name 'UserService': Unsatisfied dependency expressed through field 'userRepository';
+@Modifying(clearAutomatically = true)
+@Query(value = "UPDATE users SET review_count = review_count + 1 WHERE seq = :seq", nativeQuery = true)
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// InvalidDataAccessApiUsageException
+// clearAutomatically, flushAutomatically 에 대해선 링크 참고. (https://freedeveloper.tistory.com/154)
+```
+```java
+@Modifying(clearAutomatically = true)
+@Query(value = "UPDATE User SET review_count = review_count + 1 WHERE seq = :seq")
+int updateReviewCountBySeq(@Param("seq") Long seq);
+// UPDATE 뒤에는 테이블 명이 아니라 Entity 클래스 명이 위치해야 했다. 대소문자도 구분.
+// 혹은 @Entity에 name을 테이블 명으로 설정해주면 된다.
 ```
 
 ### 5. save 메소드에 맞는 파라미터(entity)로
@@ -240,28 +220,36 @@ int reject(@Param("orderSeq") Long orderSeq, @Param("rejectMsg") String rejectMs
 	review = reviewRepository.save(review);
 ```
 
+### 6. update 쿼리 제거
+```java
+    @Query(value = "UPDATE Order SET state = 'ACCEPTED' WHERE seq = :orderSeq AND seq = :userSeq AND state = 'REQUESTED'", nativeQuery = true)
+    // InvalidDataAccessApiUsageException
+```
+```java
+    @Query(value = "UPDATE Order SET state = 'ACCEPTED' WHERE seq = :orderSeq AND user.seq = :userSeq AND state = 'REQUESTED'", nativeQuery = true)
+    // InvalidDataAccessApiUsageException
+```
+```java
+    // 제거. findById로 찾아 값을 세팅한 후, 별도의 update를 실행하지 않아도 반영된다.
+    // Service 2로 연결.
+```
 
+### 7.
+```java
+    // Field userRepository in com.github.prgrms.users.UserServiceImpl required a bean of type 'com.github.prgrms.users.UserRepository' that could not be found.
+```
 
-
+```java
+    // UnsatisfiedDependencyException: Error creating bean with name 'UserService': Unsatisfied dependency expressed through field 'userRepository';
+```
 
 <br>
 <br>
 <br>
 
 # Service 이력
-### 1.
-```java
-// The dependencies of some of the beans in the application context form a cycle: ~
-// As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
-// Requested bean is currently in creation: Is there an unresolvable circular reference?
-```
-```yml
-spring:
-    main:
-        allow-circular-references: true
-```
 
-### 2.
+### 1. 의존성 주입 방식 변경 (필드 → 생성자)
 ```java
 @Autowired
 private UserRepository userRepository;
@@ -271,12 +259,54 @@ private final UserRepository userRepository;
 public UserServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
 }
-// 의존성 주입 방법을 생성자 주입으로 변경
-// 이유는 링크 참고 (https://madplay.github.io/post/why-constructor-injection-is-better-than-field-injection)
+// 이유는 링크 참고. (https://madplay.github.io/post/why-constructor-injection-is-better-than-field-injection)
+
+```
+### 2. 별도의 update 쿼리 사용 X
+```java
+	public Boolean complete(Long orderSeq, Long userSeq) {
+		if (orderRepository.accept(orderSeq, userSeq) < 1) {
+            return true;
+        } else {
+            return false;
+        }
+	}
+    // InvalidDataAccessApiUsageException
+```
+```java
+	public Boolean complete(Long orderSeq, Long userSeq) {
+		Optional<Order> orderOpt = orderRepository.findById(orderSeq);
+        // ~
+		Order order = orderOpt.get();
+		// ~
+		order.setState("COMPLETE");
+		order.setCompletedAt(LocalDateTime.now());
+		return true;
+	}
+    // 실패
+```
+```java
+	@Transactional
+	public Boolean complete(Long orderSeq, Long userSeq) {
+		// ~
+	}
+    // dataintegrityviolationexception
 ```
 
-### 3.
+### 3. 오타
 ```java
+	@Transactional
+	public Boolean complete(Long orderSeq, Long userSeq) {
+		order.setState("COMPLETE");
+	}
+    // dataintegrityviolationexception
+    // Value not permitted for column "('REQUESTED', 'ACCEPTED', 'SHIPPING', 'COMPLETED', 'REJECTED')": "COMPLETE";
+```
+```java
+	@Transactional
+	public Boolean complete(Long orderSeq, Long userSeq) {
+		order.setState("COMPLETED");
+	}
 ```
 
 <br>
@@ -338,23 +368,29 @@ public UserServiceImpl(UserRepository userRepository) {
 <br>
 
 # 기타
-### 1. JpaConfigure 추가
+
+### 1. application.yml 설정
+```yml
+# H2 DB 설정은 링크 참고. (http://www.h2database.com/html/features.html)
+# JPA 설정은 링크 참고. (https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html)
+```
+### 2. 순환 참조 허용
 ```java
-// org.springframework.context.ApplicationContextException
-// No property 'update' found for type 'User'
+// The dependencies of some of the beans in the application context form a cycle: ~
+// As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+// Requested bean is currently in creation: Is there an unresolvable circular reference?
+```
+```yml
+spring:
+    main:
+        allow-circular-references: true
 ```
 
-### 2. class 파일 삭제 후 실행 불가
+### 3. class 파일 삭제 후 실행 불가
 ```java
 // 기본 클래스 com.github.prgrms.Application을(를) 찾거나 로드할 수 없습니다. ~ java.lang.ClassNotFoundException: com.github.prgrms.Application
 // 해결 방법을 찾아보니 Eclipse 쪽 정보만 많이 나왔다. 그럼에도 고집 부리며 VSCode로 해결하려다, 결국 Eclipse로 해결. 같은 소스인데 이러는 걸 보면, VSCode나 Eclipse 등의 각 IDE는 (실행 여부에 영향을 줄 만큼 중요한) 실행 환경 파일이 별도로 존재하는 듯하다.
 // 이게 과연 해결인 것인지는 모르겠는데, Eclipse에서는 그냥 실행되었던 것으로 기억한다.
-```
-
-### 3. application.yml 설정
-```yml
-# H2 DB 설정은 링크 참고. (http://www.h2database.com/html/features.html)
-# JPA 설정은 링크 참고. (https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html)
 ```
 
 ### 4. H2 DB에서 컬럼의 default 값 설정 관련 시도 중 극히 일부
